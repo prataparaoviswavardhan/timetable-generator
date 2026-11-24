@@ -1,0 +1,270 @@
+/**
+ * Main application state store.
+ * Manages configuration drafts, localStorage persistence, presets, and solver execution.
+ */
+
+import { useState, useEffect } from "react";
+import type {
+  GenerateRequest,
+  GenerateResponse,
+  CollegeConfig,
+  BreakSlot,
+  Department,
+  Section,
+  Subject,
+  Faculty,
+  Room,
+  SectionSubjectAssignment,
+  SolverWeights,
+  ValidationErrorDetail,
+} from "../domain/types.ts";
+import { validateConfig } from "../domain/validation.ts";
+
+const STORAGE_KEY = "smart_college_timetable_draft_v1";
+
+export const DEFAULT_CONFIG: GenerateRequest = {
+  collegeConfig: {
+    collegeName: "Apex Institute of Engineering & Technology",
+    workingDays: [1, 2, 3, 4, 5],
+    periodsPerDay: 7,
+    dayStartTime: "09:00",
+    periodDurationMinutes: 50,
+  },
+  breakSlots: [
+    {
+      id: "break-recess",
+      name: "Morning Tea Break",
+      periodAfter: 2,
+      durationMinutes: 15,
+      appliesToDays: [1, 2, 3, 4, 5],
+    },
+    {
+      id: "break-lunch",
+      name: "Lunch Break",
+      periodAfter: 4,
+      durationMinutes: 45,
+      appliesToDays: [1, 2, 3, 4, 5],
+    },
+  ],
+  departments: [
+    { id: "dept-cse", name: "Computer Science & Engineering", code: "CSE" },
+  ],
+  sections: [
+    { id: "sec-cse-3a", departmentId: "dept-cse", year: 2, semester: 3, name: "CSE-3A" },
+  ],
+  subjects: [
+    {
+      id: "sub-ds",
+      name: "Data Structures & Algorithms",
+      code: "CS301",
+      departmentId: "dept-cse",
+      type: "theory",
+      weeklyPeriods: 4,
+      consecutivePeriods: 1,
+    },
+    {
+      id: "sub-os",
+      name: "Operating Systems",
+      code: "CS302",
+      departmentId: "dept-cse",
+      type: "theory",
+      weeklyPeriods: 4,
+      consecutivePeriods: 1,
+    },
+    {
+      id: "sub-dbms",
+      name: "Database Management Systems",
+      code: "CS303",
+      departmentId: "dept-cse",
+      type: "theory",
+      weeklyPeriods: 4,
+      consecutivePeriods: 1,
+    },
+    {
+      id: "sub-ds-lab",
+      name: "Data Structures Laboratory",
+      code: "CS301P",
+      departmentId: "dept-cse",
+      type: "practical",
+      weeklyPeriods: 3,
+      consecutivePeriods: 3,
+      requiredLabType: "computing-lab",
+    },
+  ],
+  faculty: [
+    {
+      id: "fac-at",
+      name: "Dr. Alan Turing",
+      shortName: "AT",
+      departmentId: "dept-cse",
+      qualifiedSubjectIds: ["sub-ds", "sub-ds-lab"],
+      unavailableSlots: [],
+      maxPeriodsPerDay: 4,
+      maxPeriodsPerWeek: 18,
+    },
+    {
+      id: "fac-al",
+      name: "Dr. Ada Lovelace",
+      shortName: "AL",
+      departmentId: "dept-cse",
+      qualifiedSubjectIds: ["sub-os", "sub-dbms"],
+      unavailableSlots: [],
+      maxPeriodsPerDay: 4,
+      maxPeriodsPerWeek: 18,
+    },
+  ],
+  rooms: [
+    { id: "room-101", name: "Lecture Hall 101", type: "classroom" },
+    { id: "room-lab1", name: "Computing Lab 1", type: "lab", labType: "computing-lab" },
+  ],
+  assignments: [
+    { id: "as-1", sectionId: "sec-cse-3a", subjectId: "sub-ds", facultyIds: ["fac-at"], preferredRoomId: "room-101" },
+    { id: "as-2", sectionId: "sec-cse-3a", subjectId: "sub-os", facultyIds: ["fac-al"], preferredRoomId: "room-101" },
+    { id: "as-3", sectionId: "sec-cse-3a", subjectId: "sub-dbms", facultyIds: ["fac-al"], preferredRoomId: "room-101" },
+    { id: "as-4", sectionId: "sec-cse-3a", subjectId: "sub-ds-lab", facultyIds: ["fac-at"], preferredRoomId: "room-lab1" },
+  ],
+  weights: {
+    spreadSubjectsAcrossWeek: 10,
+    maxConsecutiveTheory: 2,
+    consecutiveTheoryPenalty: 5,
+    minimizeFacultyGaps: 8,
+    balanceFacultyWorkload: 4,
+    distributePracticals: 10,
+    diverseFirstPeriods: 2,
+  },
+  timeLimitSeconds: 30,
+};
+
+export const MEDIUM_COLLEGE_PRESET: GenerateRequest = {
+  collegeConfig: {
+    collegeName: "State Institute of Technology",
+    workingDays: [1, 2, 3, 4, 5],
+    periodsPerDay: 7,
+    dayStartTime: "08:30",
+    periodDurationMinutes: 50,
+  },
+  breakSlots: [
+    { id: "break-recess", name: "Morning Recess", periodAfter: 2, durationMinutes: 15, appliesToDays: [1, 2, 3, 4, 5] },
+    { id: "break-lunch", name: "Lunch Break", periodAfter: 4, durationMinutes: 50, appliesToDays: [1, 2, 3, 4, 5] },
+  ],
+  departments: [
+    { id: "dept-cse", name: "Computer Science & Engineering", code: "CSE" },
+    { id: "dept-ece", name: "Electronics & Communication", code: "ECE" },
+    { id: "dept-mech", name: "Mechanical Engineering", code: "MECH" },
+    { id: "dept-civ", name: "Civil Engineering", code: "CIV" },
+  ],
+  sections: [
+    { id: "sec-cse-1a", departmentId: "dept-cse", year: 1, semester: 1, name: "CSE-1A" },
+    { id: "sec-cse-1b", departmentId: "dept-cse", year: 1, semester: 1, name: "CSE-1B" },
+    { id: "sec-cse-2a", departmentId: "dept-cse", year: 2, semester: 3, name: "CSE-2A" },
+    { id: "sec-cse-2b", departmentId: "dept-cse", year: 2, semester: 3, name: "CSE-2B" },
+    { id: "sec-ece-1a", departmentId: "dept-ece", year: 1, semester: 1, name: "ECE-1A" },
+    { id: "sec-ece-1b", departmentId: "dept-ece", year: 1, semester: 1, name: "ECE-1B" },
+    { id: "sec-ece-2a", departmentId: "dept-ece", year: 2, semester: 3, name: "ECE-2A" },
+    { id: "sec-ece-2b", departmentId: "dept-ece", year: 2, semester: 3, name: "ECE-2B" },
+    { id: "sec-mech-1a", departmentId: "dept-mech", year: 1, semester: 1, name: "MECH-1A" },
+    { id: "sec-mech-2a", departmentId: "dept-mech", year: 2, semester: 3, name: "MECH-2A" },
+    { id: "sec-civ-1a", departmentId: "dept-civ", year: 1, semester: 1, name: "CIV-1A" },
+    { id: "sec-civ-2a", departmentId: "dept-civ", year: 2, semester: 3, name: "CIV-2A" },
+  ],
+  subjects: [
+    { id: "sub-math1", name: "Engineering Mathematics I", code: "MA101", departmentId: "dept-cse", type: "theory", weeklyPeriods: 4, consecutivePeriods: 1 },
+    { id: "sub-phy1", name: "Engineering Physics", code: "PH101", departmentId: "dept-cse", type: "theory", weeklyPeriods: 3, consecutivePeriods: 1 },
+    { id: "sub-cp", name: "C Programming", code: "CS101", departmentId: "dept-cse", type: "theory", weeklyPeriods: 4, consecutivePeriods: 1 },
+    { id: "sub-cp-lab", name: "C Programming Lab", code: "CS101P", departmentId: "dept-cse", type: "practical", weeklyPeriods: 3, consecutivePeriods: 3, requiredLabType: "comp-lab" },
+    { id: "sub-phy-lab", name: "Physics Lab", code: "PH101P", departmentId: "dept-cse", type: "practical", weeklyPeriods: 3, consecutivePeriods: 3, requiredLabType: "physics-lab" },
+    { id: "sub-dsa", name: "Data Structures", code: "CS201", departmentId: "dept-cse", type: "theory", weeklyPeriods: 4, consecutivePeriods: 1 },
+    { id: "sub-dsa-lab", name: "Data Structures Lab", code: "CS201P", departmentId: "dept-cse", type: "practical", weeklyPeriods: 3, consecutivePeriods: 3, requiredLabType: "comp-lab" },
+    { id: "sub-edc", name: "Electronic Devices", code: "EC201", departmentId: "dept-ece", type: "theory", weeklyPeriods: 4, consecutivePeriods: 1 },
+    { id: "sub-edc-lab", name: "Electronic Devices Lab", code: "EC201P", departmentId: "dept-ece", type: "practical", weeklyPeriods: 3, consecutivePeriods: 3, requiredLabType: "ece-lab" },
+    { id: "sub-thermo", name: "Thermodynamics", code: "ME201", departmentId: "dept-mech", type: "theory", weeklyPeriods: 4, consecutivePeriods: 1 },
+    { id: "sub-som", name: "Strength of Materials", code: "CV201", departmentId: "dept-civ", type: "theory", weeklyPeriods: 4, consecutivePeriods: 1 },
+  ],
+  faculty: [
+    { id: "fac-math", name: "Dr. Ramanujan", shortName: "SR", departmentId: "dept-cse", qualifiedSubjectIds: ["sub-math1"], unavailableSlots: [], maxPeriodsPerWeek: 24 },
+    { id: "fac-phy", name: "Dr. C V Raman", shortName: "CVR", departmentId: "dept-cse", qualifiedSubjectIds: ["sub-phy1", "sub-phy-lab"], unavailableSlots: [], maxPeriodsPerWeek: 24 },
+    { id: "fac-cs1", name: "Prof. Linus", shortName: "LT", departmentId: "dept-cse", qualifiedSubjectIds: ["sub-cp", "sub-cp-lab", "sub-dsa", "sub-dsa-lab"], unavailableSlots: [] },
+    { id: "fac-cs2", name: "Prof. Dennis", shortName: "DR", departmentId: "dept-cse", qualifiedSubjectIds: ["sub-cp", "sub-cp-lab", "sub-dsa", "sub-dsa-lab"], unavailableSlots: [] },
+    { id: "fac-ece1", name: "Prof. Maxwell", shortName: "JM", departmentId: "dept-ece", qualifiedSubjectIds: ["sub-edc", "sub-edc-lab"], unavailableSlots: [] },
+    { id: "fac-mech1", name: "Prof. Carnot", shortName: "NC", departmentId: "dept-mech", qualifiedSubjectIds: ["sub-thermo"], unavailableSlots: [] },
+    { id: "fac-civ1", name: "Prof. Euler", shortName: "LE", departmentId: "dept-civ", qualifiedSubjectIds: ["sub-som"], unavailableSlots: [] },
+  ],
+  rooms: [
+    { id: "r-lh1", name: "LH-1", type: "classroom" },
+    { id: "r-lh2", name: "LH-2", type: "classroom" },
+    { id: "r-lh3", name: "LH-3", type: "classroom" },
+    { id: "r-lh4", name: "LH-4", type: "classroom" },
+    { id: "r-lh5", name: "LH-5", type: "classroom" },
+    { id: "r-lh6", name: "LH-6", type: "classroom" },
+    { id: "r-complab1", name: "Computing Lab 1", type: "lab", labType: "comp-lab" },
+    { id: "r-complab2", name: "Computing Lab 2", type: "lab", labType: "comp-lab" },
+    { id: "r-phylab", name: "Physics Lab", type: "lab", labType: "physics-lab" },
+    { id: "r-ecelab", name: "Electronics Lab", type: "lab", labType: "ece-lab" },
+  ],
+  assignments: [
+    { id: "as-cse1a-m", sectionId: "sec-cse-1a", subjectId: "sub-math1", facultyIds: ["fac-math"] },
+    { id: "as-cse1a-p", sectionId: "sec-cse-1a", subjectId: "sub-phy1", facultyIds: ["fac-phy"] },
+    { id: "as-cse1a-c", sectionId: "sec-cse-1a", subjectId: "sub-cp", facultyIds: ["fac-cs1"] },
+    { id: "as-cse1a-cl", sectionId: "sec-cse-1a", subjectId: "sub-cp-lab", facultyIds: ["fac-cs1"] },
+
+    { id: "as-cse1b-m", sectionId: "sec-cse-1b", subjectId: "sub-math1", facultyIds: ["fac-math"] },
+    { id: "as-cse1b-p", sectionId: "sec-cse-1b", subjectId: "sub-phy1", facultyIds: ["fac-phy"] },
+    { id: "as-cse1b-c", sectionId: "sec-cse-1b", subjectId: "sub-cp", facultyIds: ["fac-cs2"] },
+    { id: "as-cse1b-cl", sectionId: "sec-cse-1b", subjectId: "sub-cp-lab", facultyIds: ["fac-cs2"] },
+
+    { id: "as-cse2a-dsa", sectionId: "sec-cse-2a", subjectId: "sub-dsa", facultyIds: ["fac-cs1"] },
+    { id: "as-cse2a-dsal", sectionId: "sec-cse-2a", subjectId: "sub-dsa-lab", facultyIds: ["fac-cs1"] },
+
+    { id: "as-cse2b-dsa", sectionId: "sec-cse-2b", subjectId: "sub-dsa", facultyIds: ["fac-cs2"] },
+    { id: "as-cse2b-dsal", sectionId: "sec-cse-2b", subjectId: "sub-dsa-lab", facultyIds: ["fac-cs2"] },
+
+    { id: "as-ece1a-m", sectionId: "sec-ece-1a", subjectId: "sub-math1", facultyIds: ["fac-math"] },
+    { id: "as-ece1a-p", sectionId: "sec-ece-1a", subjectId: "sub-phy1", facultyIds: ["fac-phy"] },
+    { id: "as-ece1a-pl", sectionId: "sec-ece-1a", subjectId: "sub-phy-lab", facultyIds: ["fac-phy"] },
+
+    { id: "as-ece1b-m", sectionId: "sec-ece-1b", subjectId: "sub-math1", facultyIds: ["fac-math"] },
+    { id: "as-ece1b-p", sectionId: "sec-ece-1b", subjectId: "sub-phy1", facultyIds: ["fac-phy"] },
+    { id: "as-ece1b-pl", sectionId: "sec-ece-1b", subjectId: "sub-phy-lab", facultyIds: ["fac-phy"] },
+
+    { id: "as-ece2a-edc", sectionId: "sec-ece-2a", subjectId: "sub-edc", facultyIds: ["fac-ece1"] },
+    { id: "as-ece2a-edcl", sectionId: "sec-ece-2a", subjectId: "sub-edc-lab", facultyIds: ["fac-ece1"] },
+
+    { id: "as-ece2b-edc", sectionId: "sec-ece-2b", subjectId: "sub-edc", facultyIds: ["fac-ece1"] },
+
+    { id: "as-mech1a-m", sectionId: "sec-mech-1a", subjectId: "sub-math1", facultyIds: ["fac-math"] },
+    { id: "as-mech2a-th", sectionId: "sec-mech-2a", subjectId: "sub-thermo", facultyIds: ["fac-mech1"] },
+
+    { id: "as-civ1a-m", sectionId: "sec-civ-1a", subjectId: "sub-math1", facultyIds: ["fac-math"] },
+    { id: "as-civ2a-som", sectionId: "sec-civ-2a", subjectId: "sub-som", facultyIds: ["fac-civ1"] },
+  ],
+  weights: {
+    spreadSubjectsAcrossWeek: 10,
+    maxConsecutiveTheory: 2,
+    consecutiveTheoryPenalty: 5,
+    minimizeFacultyGaps: 8,
+    balanceFacultyWorkload: 4,
+    distributePracticals: 10,
+    diverseFirstPeriods: 2,
+  },
+  timeLimitSeconds: 60,
+};
+
+export function loadSavedConfig(): GenerateRequest {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      return JSON.parse(raw);
+    }
+  } catch (err) {
+    console.warn("Failed to load draft from localStorage", err);
+  }
+  return DEFAULT_CONFIG;
+}
+
+export function saveConfigDraft(config: GenerateRequest): void {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+  } catch (err) {
+    console.error("Failed to persist draft to localStorage", err);
+  }
+}

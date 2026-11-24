@@ -1,0 +1,196 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "GenerateRequest",
+  "description": "Input configuration payload for the timetable generation service",
+  "type": "object",
+  "required": [
+    "collegeConfig",
+    "breakSlots",
+    "departments",
+    "sections",
+    "subjects",
+    "faculty",
+    "rooms",
+    "assignments"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "collegeConfig": {
+      "type": "object",
+      "required": [
+        "collegeName",
+        "workingDays",
+        "periodsPerDay",
+        "dayStartTime",
+        "periodDurationMinutes"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "collegeName": { "type": "string", "minLength": 1 },
+        "workingDays": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 1, "maximum": 7 },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "periodsPerDay": { "type": "integer", "minimum": 1, "maximum": 15 },
+        "dayStartTime": {
+          "type": "string",
+          "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+        },
+        "periodDurationMinutes": { "type": "integer", "minimum": 15, "maximum": 120 }
+      }
+    },
+    "breakSlots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "periodAfter", "durationMinutes", "appliesToDays"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "name": { "type": "string", "minLength": 1 },
+          "periodAfter": { "type": "integer", "minimum": 1 },
+          "durationMinutes": { "type": "integer", "minimum": 5, "maximum": 120 },
+          "appliesToDays": {
+            "type": "array",
+            "items": { "type": "integer", "minimum": 1, "maximum": 7 },
+            "uniqueItems": true
+          }
+        }
+      }
+    },
+    "departments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "code"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "name": { "type": "string", "minLength": 1 },
+          "code": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "departmentId", "year", "semester", "name"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "departmentId": { "type": "string", "minLength": 1 },
+          "year": { "type": "integer", "minimum": 1 },
+          "semester": { "type": "integer", "minimum": 1 },
+          "name": { "type": "string", "minLength": 1 },
+          "studentCount": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "subjects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "code", "departmentId", "type", "weeklyPeriods", "consecutivePeriods"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "name": { "type": "string", "minLength": 1 },
+          "code": { "type": "string", "minLength": 1 },
+          "departmentId": { "type": "string", "minLength": 1 },
+          "type": { "type": "string", "enum": ["theory", "practical"] },
+          "weeklyPeriods": { "type": "integer", "minimum": 1 },
+          "consecutivePeriods": { "type": "integer", "minimum": 1 },
+          "preferredRoomType": { "type": "string", "enum": ["classroom", "lab"] },
+          "requiredLabType": { "type": "string" }
+        }
+      }
+    },
+    "faculty": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "shortName", "departmentId", "qualifiedSubjectIds", "unavailableSlots"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "name": { "type": "string", "minLength": 1 },
+          "shortName": { "type": "string", "minLength": 1 },
+          "departmentId": { "type": "string", "minLength": 1 },
+          "qualifiedSubjectIds": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "unavailableSlots": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["day", "period"],
+              "additionalProperties": false,
+              "properties": {
+                "day": { "type": "integer", "minimum": 1, "maximum": 7 },
+                "period": { "type": "integer", "minimum": 1 }
+              }
+            }
+          },
+          "maxPeriodsPerDay": { "type": "integer", "minimum": 1 },
+          "maxPeriodsPerWeek": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
+    "rooms": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "type"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "name": { "type": "string", "minLength": 1 },
+          "type": { "type": "string", "enum": ["classroom", "lab"] },
+          "capacity": { "type": "integer", "minimum": 1 },
+          "labType": { "type": "string" },
+          "supportedSubjectIds": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
+    "assignments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "sectionId", "subjectId", "facultyIds"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "sectionId": { "type": "string", "minLength": 1 },
+          "subjectId": { "type": "string", "minLength": 1 },
+          "facultyIds": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 1
+          },
+          "preferredRoomId": { "type": "string" }
+        }
+      }
+    },
+    "weights": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "spreadSubjectsAcrossWeek": { "type": "integer", "minimum": 0 },
+        "maxConsecutiveTheory": { "type": "integer", "minimum": 1 },
+        "consecutiveTheoryPenalty": { "type": "integer", "minimum": 0 },
+        "minimizeFacultyGaps": { "type": "integer", "minimum": 0 },
+        "balanceFacultyWorkload": { "type": "integer", "minimum": 0 },
+        "distributePracticals": { "type": "integer", "minimum": 0 },
+        "diverseFirstPeriods": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "timeLimitSeconds": { "type": "integer", "minimum": 5, "maximum": 300 }
+  }
+}

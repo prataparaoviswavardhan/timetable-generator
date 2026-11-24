@@ -1,0 +1,132 @@
+{
+  "collegeConfig": {
+    "collegeName": "St. Jude Engineering College",
+    "workingDays": [1, 2, 3, 4, 5],
+    "periodsPerDay": 6,
+    "dayStartTime": "09:00",
+    "periodDurationMinutes": 50
+  },
+  "breakSlots": [
+    {
+      "id": "break-lunch",
+      "name": "Lunch Break",
+      "periodAfter": 3,
+      "durationMinutes": 45,
+      "appliesToDays": [1, 2, 3, 4, 5]
+    }
+  ],
+  "departments": [
+    {
+      "id": "dept-cse",
+      "name": "Computer Science & Engineering",
+      "code": "CSE"
+    }
+  ],
+  "sections": [
+    {
+      "id": "sec-cse-3a",
+      "departmentId": "dept-cse",
+      "year": 2,
+      "semester": 3,
+      "name": "CSE-3A"
+    }
+  ],
+  "subjects": [
+    {
+      "id": "sub-ds",
+      "name": "Data Structures",
+      "code": "CS301",
+      "departmentId": "dept-cse",
+      "type": "theory",
+      "weeklyPeriods": 4,
+      "consecutivePeriods": 1
+    },
+    {
+      "id": "sub-os",
+      "name": "Operating Systems",
+      "code": "CS302",
+      "departmentId": "dept-cse",
+      "type": "theory",
+      "weeklyPeriods": 4,
+      "consecutivePeriods": 1
+    },
+    {
+      "id": "sub-algo-lab",
+      "name": "Algorithms Lab",
+      "code": "CS303P",
+      "departmentId": "dept-cse",
+      "type": "practical",
+      "weeklyPeriods": 2,
+      "consecutivePeriods": 2,
+      "requiredLabType": "computing-lab"
+    }
+  ],
+  "faculty": [
+    {
+      "id": "fac-at",
+      "name": "Dr. Alan Turing",
+      "shortName": "AT",
+      "departmentId": "dept-cse",
+      "qualifiedSubjectIds": ["sub-ds", "sub-algo-lab"],
+      "unavailableSlots": [],
+      "maxPeriodsPerDay": 4,
+      "maxPeriodsPerWeek": 18
+    },
+    {
+      "id": "fac-al",
+      "name": "Dr. Ada Lovelace",
+      "shortName": "AL",
+      "departmentId": "dept-cse",
+      "qualifiedSubjectIds": ["sub-os", "sub-algo-lab"],
+      "unavailableSlots": [],
+      "maxPeriodsPerDay": 4,
+      "maxPeriodsPerWeek": 18
+    }
+  ],
+  "rooms": [
+    {
+      "id": "room-101",
+      "name": "LH-101",
+      "type": "classroom"
+    },
+    {
+      "id": "room-lab1",
+      "name": "Computing Lab 1",
+      "type": "lab",
+      "labType": "computing-lab"
+    }
+  ],
+  "assignments": [
+    {
+      "id": "assign-1",
+      "sectionId": "sec-cse-3a",
+      "subjectId": "sub-ds",
+      "facultyIds": ["fac-at"],
+      "preferredRoomId": "room-101"
+    },
+    {
+      "id": "assign-2",
+      "sectionId": "sec-cse-3a",
+      "subjectId": "sub-os",
+      "facultyIds": ["fac-al"],
+      "preferredRoomId": "room-101"
+    },
+    {
+      "id": "assign-3",
+      "sectionId": "sec-cse-3a",
+      "subjectId": "sub-algo-lab",
+      "facultyIds": ["fac-at"],
+      "preferredRoomId": "room-lab1"
+    }
+  ],
+  "weights": {
+    "spreadSubjectsAcrossWeek": 10,
+    "maxConsecutiveTheory": 2,
+    "consecutiveTheoryPenalty": 5,
+    "minimizeFacultyGaps": 8,
+    "balanceFacultyWorkload": 4,
+    "distributePracticals": 10,
+    "diverseFirstPeriods": 2
+  },
+  "timeLimitSeconds": 30
+}

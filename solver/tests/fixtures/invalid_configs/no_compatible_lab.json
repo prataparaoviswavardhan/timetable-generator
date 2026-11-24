@@ -1,0 +1,36 @@
+{
+  "collegeConfig": {
+    "collegeName": "No Lab College",
+    "workingDays": [1, 2, 3, 4, 5],
+    "periodsPerDay": 6,
+    "dayStartTime": "09:00",
+    "periodDurationMinutes": 50
+  },
+  "breakSlots": [],
+  "departments": [{ "id": "dept-cse", "name": "CSE", "code": "CSE" }],
+  "sections": [
+    { "id": "sec-1", "departmentId": "dept-cse", "year": 1, "semester": 1, "name": "1A" }
+  ],
+  "subjects": [
+    {
+      "id": "sub-robotics",
+      "name": "Robotics Lab",
+      "code": "ROB101",
+      "departmentId": "dept-cse",
+      "type": "practical",
+      "weeklyPeriods": 2,
+      "consecutivePeriods": 2,
+      "requiredLabType": "robotics-bay"
+    }
+  ],
+  "faculty": [
+    { "id": "fac-1", "name": "Dr. Bot", "shortName": "DB", "departmentId": "dept-cse", "qualifiedSubjectIds": ["sub-robotics"], "unavailableSlots": [] }
+  ],
+  "rooms": [
+    { "id": "room-1", "name": "LH 101", "type": "classroom" },
+    { "id": "room-2", "name": "Chemistry Lab", "type": "lab", "labType": "chemistry-lab" }
+  ],
+  "assignments": [
+    { "id": "a-1", "sectionId": "sec-1", "subjectId": "sub-robotics", "facultyIds": ["fac-1"] }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "collegeConfig": {
+    "collegeName": "Unqualified Faculty College",
+    "workingDays": [1, 2, 3, 4, 5],
+    "periodsPerDay": 6,
+    "dayStartTime": "09:00",
+    "periodDurationMinutes": 50
+  },
+  "breakSlots": [],
+  "departments": [{ "id": "dept-cse", "name": "CSE", "code": "CSE" }],
+  "sections": [
+    { "id": "sec-1", "departmentId": "dept-cse", "year": 1, "semester": 1, "name": "1A" }
+  ],
+  "subjects": [
+    { "id": "sub-1", "name": "Quantum Computing", "code": "CS901", "departmentId": "dept-cse", "type": "theory", "weeklyPeriods": 3, "consecutivePeriods": 1 }
+  ],
+  "faculty": [
+    { "id": "fac-1", "name": "Dr. Historian", "shortName": "DH", "departmentId": "dept-cse", "qualifiedSubjectIds": [], "unavailableSlots": [] }
+  ],
+  "rooms": [{ "id": "room-1", "name": "R1", "type": "classroom" }],
+  "assignments": [
+    { "id": "a-1", "sectionId": "sec-1", "subjectId": "sub-1", "facultyIds": ["fac-1"] }
+  ]
+}

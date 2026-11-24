@@ -1,0 +1,38 @@
+{
+  "collegeConfig": {
+    "collegeName": "Break Blocked College",
+    "workingDays": [1, 2, 3, 4, 5],
+    "periodsPerDay": 6,
+    "dayStartTime": "09:00",
+    "periodDurationMinutes": 50
+  },
+  "breakSlots": [
+    { "id": "b-1", "name": "Morning Break", "periodAfter": 2, "durationMinutes": 15, "appliesToDays": [1, 2, 3, 4, 5] },
+    { "id": "b-2", "name": "Lunch Break", "periodAfter": 4, "durationMinutes": 45, "appliesToDays": [1, 2, 3, 4, 5] }
+  ],
+  "departments": [{ "id": "dept-cse", "name": "CSE", "code": "CSE" }],
+  "sections": [
+    { "id": "sec-1", "departmentId": "dept-cse", "year": 1, "semester": 1, "name": "1A" }
+  ],
+  "subjects": [
+    {
+      "id": "sub-lab",
+      "name": "Long Practical",
+      "code": "CS101P",
+      "departmentId": "dept-cse",
+      "type": "practical",
+      "weeklyPeriods": 3,
+      "consecutivePeriods": 3,
+      "requiredLabType": "cs-lab"
+    }
+  ],
+  "faculty": [
+    { "id": "fac-1", "name": "Prof A", "shortName": "PA", "departmentId": "dept-cse", "qualifiedSubjectIds": ["sub-lab"], "unavailableSlots": [] }
+  ],
+  "rooms": [
+    { "id": "room-lab", "name": "CS Lab", "type": "lab", "labType": "cs-lab" }
+  ],
+  "assignments": [
+    { "id": "a-1", "sectionId": "sec-1", "subjectId": "sub-lab", "facultyIds": ["fac-1"] }
+  ]
+}

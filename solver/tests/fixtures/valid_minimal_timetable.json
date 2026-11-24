@@ -1,0 +1,92 @@
+[
+  {
+    "id": "slot-1",
+    "sectionId": "sec-cse-3a",
+    "day": 1,
+    "period": 1,
+    "subjectId": "sub-ds",
+    "facultyId": "fac-at",
+    "roomId": "room-101"
+  },
+  {
+    "id": "slot-2",
+    "sectionId": "sec-cse-3a",
+    "day": 1,
+    "period": 2,
+    "subjectId": "sub-os",
+    "facultyId": "fac-al",
+    "roomId": "room-101"
+  },
+  {
+    "id": "slot-3",
+    "sectionId": "sec-cse-3a",
+    "day": 2,
+    "period": 1,
+    "subjectId": "sub-ds",
+    "facultyId": "fac-at",
+    "roomId": "room-101"
+  },
+  {
+    "id": "slot-4",
+    "sectionId": "sec-cse-3a",
+    "day": 2,
+    "period": 2,
+    "subjectId": "sub-os",
+    "facultyId": "fac-al",
+    "roomId": "room-101"
+  },
+  {
+    "id": "slot-5",
+    "sectionId": "sec-cse-3a",
+    "day": 3,
+    "period": 1,
+    "subjectId": "sub-ds",
+    "facultyId": "fac-at",
+    "roomId": "room-101"
+  },
+  {
+    "id": "slot-6",
+    "sectionId": "sec-cse-3a",
+    "day": 3,
+    "period": 2,
+    "subjectId": "sub-os",
+    "facultyId": "fac-al",
+    "roomId": "room-101"
+  },
+  {
+    "id": "slot-7",
+    "sectionId": "sec-cse-3a",
+    "day": 4,
+    "period": 1,
+    "subjectId": "sub-ds",
+    "facultyId": "fac-at",
+    "roomId": "room-101"
+  },
+  {
+    "id": "slot-8",
+    "sectionId": "sec-cse-3a",
+    "day": 4,
+    "period": 2,
+    "subjectId": "sub-os",
+    "facultyId": "fac-al",
+    "roomId": "room-101"
+  },
+  {
+    "id": "slot-9",
+    "sectionId": "sec-cse-3a",
+    "day": 5,
+    "period": 1,
+    "subjectId": "sub-algo-lab",
+    "facultyId": "fac-at",
+    "roomId": "room-lab1"
+  },
+  {
+    "id": "slot-10",
+    "sectionId": "sec-cse-3a",
+    "day": 5,
+    "period": 2,
+    "subjectId": "sub-algo-lab",
+    "facultyId": "fac-at",
+    "roomId": "room-lab1"
+  }
+]

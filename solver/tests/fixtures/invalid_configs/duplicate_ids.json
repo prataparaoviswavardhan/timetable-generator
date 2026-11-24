@@ -1,0 +1,25 @@
+{
+  "collegeConfig": {
+    "collegeName": "Duplicate IDs College",
+    "workingDays": [1, 2, 3, 4, 5],
+    "periodsPerDay": 6,
+    "dayStartTime": "09:00",
+    "periodDurationMinutes": 50
+  },
+  "breakSlots": [],
+  "departments": [{ "id": "dept-cse", "name": "CSE", "code": "CSE" }],
+  "sections": [
+    { "id": "sec-dup", "departmentId": "dept-cse", "year": 1, "semester": 1, "name": "Section Alpha" },
+    { "id": "sec-dup", "departmentId": "dept-cse", "year": 1, "semester": 1, "name": "Section Beta" }
+  ],
+  "subjects": [
+    { "id": "sub-1", "name": "Maths", "code": "MA101", "departmentId": "dept-cse", "type": "theory", "weeklyPeriods": 3, "consecutivePeriods": 1 }
+  ],
+  "faculty": [
+    { "id": "fac-1", "name": "Prof M", "shortName": "PM", "departmentId": "dept-cse", "qualifiedSubjectIds": ["sub-1"], "unavailableSlots": [] }
+  ],
+  "rooms": [{ "id": "room-1", "name": "R1", "type": "classroom" }],
+  "assignments": [
+    { "id": "a-1", "sectionId": "sec-dup", "subjectId": "sub-1", "facultyIds": ["fac-1"] }
+  ]
+}

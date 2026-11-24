@@ -1,0 +1,36 @@
+{
+  "collegeConfig": {
+    "collegeName": "Overloaded Faculty College",
+    "workingDays": [1, 2, 3, 4, 5],
+    "periodsPerDay": 6,
+    "dayStartTime": "09:00",
+    "periodDurationMinutes": 50
+  },
+  "breakSlots": [],
+  "departments": [{ "id": "dept-cse", "name": "CSE", "code": "CSE" }],
+  "sections": [
+    { "id": "sec-1", "departmentId": "dept-cse", "year": 1, "semester": 1, "name": "1A" },
+    { "id": "sec-2", "departmentId": "dept-cse", "year": 1, "semester": 1, "name": "1B" }
+  ],
+  "subjects": [
+    { "id": "sub-1", "name": "Prog 1", "code": "CS101", "departmentId": "dept-cse", "type": "theory", "weeklyPeriods": 6, "consecutivePeriods": 1 },
+    { "id": "sub-2", "name": "Prog 2", "code": "CS102", "departmentId": "dept-cse", "type": "theory", "weeklyPeriods": 6, "consecutivePeriods": 1 }
+  ],
+  "faculty": [
+    {
+      "id": "fac-1",
+      "name": "Dr. Overloaded",
+      "shortName": "DO",
+      "departmentId": "dept-cse",
+      "qualifiedSubjectIds": ["sub-1", "sub-2"],
+      "unavailableSlots": [],
+      "maxPeriodsPerDay": 5,
+      "maxPeriodsPerWeek": 8
+    }
+  ],
+  "rooms": [{ "id": "room-1", "name": "R1", "type": "classroom" }],
+  "assignments": [
+    { "id": "a-1", "sectionId": "sec-1", "subjectId": "sub-1", "facultyIds": ["fac-1"] },
+    { "id": "a-2", "sectionId": "sec-2", "subjectId": "sub-2", "facultyIds": ["fac-1"] }
+  ]
+}

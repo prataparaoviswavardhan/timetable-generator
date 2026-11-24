@@ -1,0 +1,1 @@
+"""Timetable generator solver package."""
