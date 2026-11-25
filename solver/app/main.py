@@ -1,16 +1,17 @@
 """FastAPI service for Timetable Generator."""
 
 from typing import List
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from solver.app.models import (
+from app.models import (
     GenerateRequest,
     GenerateResponse,
     ValidationErrorDetail,
 )
-from solver.app.validate import validate_config
-from solver.app.solve import solve_timetable
+from app.solve import solve_timetable
+from app.validate import validate_config
 
 app = FastAPI(
     title="Smart College Timetable Generator API",
@@ -18,7 +19,7 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# CORS configuration restricted to local dev origins
+# CORS configuration. Add your deployed frontend URL here once it exists.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -59,4 +60,4 @@ def generate_endpoint(request: GenerateRequest) -> GenerateResponse:
         raise HTTPException(
             status_code=500,
             detail=f"An unexpected solver error occurred: {str(exc)}",
-        )
+ )
