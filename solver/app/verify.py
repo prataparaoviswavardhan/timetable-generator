@@ -12,7 +12,7 @@ solely against the configuration domain model.
 from typing import List, Dict, Set, Tuple
 from collections import defaultdict
 
-from solver.app.models import (
+from app.models import (
     GenerateRequest,
     TimetableSlot,
     ValidationErrorDetail,

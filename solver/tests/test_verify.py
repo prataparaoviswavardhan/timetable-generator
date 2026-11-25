@@ -5,8 +5,8 @@ from pathlib import Path
 from typing import List
 import pytest
 
-from solver.app.models import GenerateRequest, TimetableSlot, UnavailableSlot
-from solver.app.verify import verify_timetable
+from app.models import GenerateRequest, TimetableSlot, UnavailableSlot
+from app.verify import verify_timetable
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 

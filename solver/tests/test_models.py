@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from solver.app.models import (
+from app.models import (
     GenerateRequest,
     GenerateResponse,
     CollegeConfig,

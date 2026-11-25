@@ -4,8 +4,8 @@ import json
 from pathlib import Path
 import pytest
 
-from solver.app.models import GenerateRequest, BreakSlot
-from solver.app.validate import validate_config
+from app.models import GenerateRequest, BreakSlot
+from app.validate import validate_config
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 

@@ -5,17 +5,17 @@ import uuid
 from typing import List
 from ortools.sat.python import cp_model
 
-from solver.app.models import (
+from app.models import (
     GenerateRequest,
     GenerateResponse,
     TimetableSlot,
     ValidationErrorDetail,
     SolverWeights,
 )
-from solver.app.validate import validate_config
-from solver.app.build_model import build_model
-from solver.app.objective import apply_objective
-from solver.app.verify import verify_timetable
+from app.validate import validate_config
+from app.build_model import build_model
+from app.objective import apply_objective
+from app.verify import verify_timetable
 
 
 def solve_timetable(request: GenerateRequest) -> GenerateResponse:

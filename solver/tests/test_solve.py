@@ -5,10 +5,10 @@ from pathlib import Path
 from fastapi.testclient import TestClient
 import pytest
 
-from solver.app.main import app
-from solver.app.models import GenerateRequest, UnavailableSlot
-from solver.app.solve import solve_timetable
-from solver.app.verify import verify_timetable
+from app.main import app
+from app.models import GenerateRequest, UnavailableSlot
+from app.solve import solve_timetable
+from app.verify import verify_timetable
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 client = TestClient(app)

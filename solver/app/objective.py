@@ -9,8 +9,8 @@ Soft objectives:
 
 from typing import List, Dict
 from ortools.sat.python import cp_model
-from solver.app.build_model import ModelData
-from solver.app.models import SolverWeights
+from app.build_model import ModelData
+from app.models import SolverWeights
 
 
 def apply_objective(data: ModelData, weights: SolverWeights) -> None:

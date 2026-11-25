@@ -15,7 +15,7 @@ from typing import Dict, List, Tuple, Set
 from collections import defaultdict
 from ortools.sat.python import cp_model
 
-from solver.app.models import (
+from app.models import (
     GenerateRequest,
     Subject,
     Faculty,
